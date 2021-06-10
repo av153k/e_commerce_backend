@@ -17,7 +17,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 var router = (0, _express.Router)();
 router.get("/cart/:id", cartController.geCart);
-router.post("/cart/:id", cartController.upadteCart);
+router.post("/cart/:id", cartController.upadateCartProduct);
 router["delete"]("/cart/:userId/:itemId", cartController.deleteCardProduct);
 var _default = {
   router: router

@@ -12,7 +12,7 @@ getCart = function getCart(req, res) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
-          userId = req.params.id;
+          userId = req.params.userId;
 
           try {
             cart = _cart["default"].findOne({
@@ -37,11 +37,22 @@ getCart = function getCart(req, res) {
   });
 };
 
-updateCart = function updateCart(req, res) {
-  return regeneratorRuntime.async(function updateCart$(_context2) {
+var something = updateCartProduct = function updateCartProduct(req, res) {
+  var userId, _req$body, productId, productQuantity;
+
+  return regeneratorRuntime.async(function updateCartProduct$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
+          userId = req.params.userId;
+          _req$body = req.body, productId = _req$body.productId, productQuantity = _req$body.productQuantity;
+
+          try {} catch (error) {
+            console.log("Updating cart error ---" + error);
+            res.status(500).send("Something went wrong");
+          }
+
+        case 3:
         case "end":
           return _context2.stop();
       }
