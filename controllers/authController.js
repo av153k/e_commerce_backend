@@ -1,25 +1,45 @@
-import { User } from "../models/user";
-import * as jwt from "jsonwebtoken";
-import config from "config";
+import { User } from "../models/user.js";
+import jsonwebtoken  from "jsonwebtoken";
+import * as creds from "../config/creds.json";
 import bcrypt from "bcrypt";
 
-register = (req, res) => {
-  const { name, email, password } = req.body;
 
+export function register(req, res) {
+  const { name, email, password } = req.body;
+  console.log(name, email, password);
   if (!name) {
-    res.status(400).json({ msg: "Please provide name!" });
+    return res.status(400).json({ msg: "Please provide name!" });
   } else if (!email) {
-    res.status(400).json({ msg: "Please provide email!" });
+    return res.status(400).json({ msg: "Please provide email!" });
   } else if (!password) {
-    res.status(400).json({ msg: "Please provide password!" });
+    return res.status(400).json({ msg: "Please provide password!" });
   }
 
   User.findOne({ email }).then((returnedUser) => {
     if (returnedUser)
-      return res.status(400).json({ msg: "User already exists!" });
+    { return res.status(400).json({ msg: "User already exists!" }); }
+    
+    const reqUser = new User({ name, email, password });
+
+    bcrypt.genSalt(10, (error, salt) => {
+      if (error) {
+        console.log("user salt generation ---- " + error);
+      }
+      reqUser.password = salt;
+      reqUser.save().then(createdUser => {
+        console.log("created user id ---- ", createdUser._id);
+        jsonwebtoken.sign({ id: createdUser._id }, creds.jwtSecretKey, { expiresIn: creds.jwtExpiresIn }, (err, token) => {
+          if (err) {
+            console.log("user register jwt token generation error--- ", error);
+          }
+          console.log("user register jwt token ---", token);
+          res.status(200).json({ token: token, user: createdUser });
+      } )});
+    })
   });
-};
-login = async (req, res) => {
+}
+
+export async function login(req, res) {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ msg: "Please enter all fields!" });
@@ -35,12 +55,12 @@ login = async (req, res) => {
         return res.status(400).json({ msg: "Incorrect password !!" });
       }
 
-      jwt.sign(
+      jsonwebtoken.sign(
         {
           id: fetchedUser._id,
         },
-        config.get("jwtsecret"),
-        { expiresIn: 3600 },
+        creds.jwtSecretKey,
+        { expiresIn: creds.jwtExpiresIn },
         (error, token) => {
           if (error) {
             throw error;
@@ -57,13 +77,10 @@ login = async (req, res) => {
       );
     });
   });
-};
+}
 
-getUser = (req, res) => {
-  User
-    .findById(req.user.id)
+export function getUser(req, res) {
+  User.findById(req.user.id)
     .select("-password")
     .then((fetchedUser) => res.json(fetchedUser));
-};
-
-export { register, login, getUser };
+}

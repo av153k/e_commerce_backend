@@ -1,15 +1,15 @@
-import { Product } from "../models/product";
+import { Product } from "../models/product.js";
 
-getProducts = (req, res) => {
+export function getProducts(req, res) {
   Product.find()
     .sort({ date: -1 })
     .then((products) => res.json(products));
-};
-postProduct = (req, res) => {
+}
+export function postProduct(req, res) {
   const newProduct = new Product(req.body);
   newProduct.save().then((product) => res.json(product));
-};
-updateProduct = (req, res) => {
+}
+export function updateProduct(req, res) {
   Product.findByIdAndUpdate({ _id: req.params.id }, req.body).then(
     (updated) => {
       if (updated) {
@@ -19,8 +19,8 @@ updateProduct = (req, res) => {
       }
     }
   );
-};
-deleteProduct = (req, res) => {
+}
+export function deleteProduct(req, res) {
   Product.findByIdAndDelete({ _id: req.params.id }).then((deleted) => {
     if (deleted) {
       res.json({ success: true });
@@ -28,6 +28,6 @@ deleteProduct = (req, res) => {
       res.json({ success: false });
     }
   });
-};
+}
 
-export { getProducts, postProduct, updateProduct, deleteProduct };
+// export { getProducts, postProduct, updateProduct, deleteProduct };

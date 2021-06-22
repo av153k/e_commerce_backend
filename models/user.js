@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+// import require from "module";
 const schema = mongoose.Schema;
-const { isValidEmail } = require("validator");
+import validator from "validator";
+// const { isValidEmail } = require("validator");
 
 const userSchema = new schema({
   name: {
@@ -12,7 +14,7 @@ const userSchema = new schema({
     required: [true, "Please enter an email"],
     unique: true,
     lowercase: true,
-    validate: [isValidEmail, "Please enter a valid email"],
+    validate: [validator.isEmail, "Please enter a valid email"],
   },
   password: {
     type: String,
@@ -21,7 +23,7 @@ const userSchema = new schema({
   },
   createdAt: {
     type: Date,
-    deault: Date.now,
+    default: Date.now,
   },
   lastUpdatedAt: {
     type: Date,

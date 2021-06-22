@@ -1,11 +1,11 @@
 import { Router } from "express";
-import * as authController from "../controllers/authController";
-import { auth } from "../middlewares/auth";
+import * as authController from "../controllers/authController.js";
+import { auth } from "../middlewares/auth.js";
 
-const router = Router();
+const authRouter = Router();
 
-router.post("/register", authController.register);
-router.post("/login", authController.login);
-router.get("/user", auth, authController.getUser);
+authRouter.post("/register", authController.register);
+authRouter.post("/login", authController.login);
+authRouter.get("/user", auth, authController.getUser);
 
-export { router };
+export { authRouter };

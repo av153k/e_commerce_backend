@@ -1,14 +1,14 @@
-import Product from "../models/product";
-import Cart from "../models/cart";
+import {Product} from "../models/product.js";
+import {Cart} from "../models/cart.js";
 
-getCart = async (req, res) => {
+export async function getCart (req, res)  {
   const userId = req.params.userId;
   try {
     let cart = Cart.findOne({ userId });
     if (cart && cart.items.length > 0) {
-      res.send(cart);
+      res.status(200).send({ cart: cart });
     } else {
-      res.send(null);
+      res.status(404).send({ error: "Cart not found" });
     }
   } catch (error) {
     console.log("Getting cart error --" + error);
@@ -16,7 +16,7 @@ getCart = async (req, res) => {
   }
 };
 
-updateCartProduct = async (req, res) => {
+ export async function updateCartProduct(req, res)  {
   const userId = req.params.userId;
   const { productId, productQuantity } = req.body;
   try {
@@ -61,7 +61,7 @@ updateCartProduct = async (req, res) => {
   }
 };
 
-deleteCartProduct = async (req, res) => {
+ export async function deleteCartProduct(req, res)  {
   const userId = req.params.userId;
   const productId = req.params.productId;
 
@@ -81,4 +81,4 @@ deleteCartProduct = async (req, res) => {
   }
 };
 
-export { getCart, updateCartProduct, deleteCartProduct };
+// export { getCart, updateCartProduct, deleteCartProduct };

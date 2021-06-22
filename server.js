@@ -2,11 +2,23 @@ import express from "express";
 import mongoose from "mongoose";
 import path from "path";
 import config from "config";
+import { authRouter } from "./routes/authRoutes.js";
+import { cartRouter } from "./routes/cartRoutes.js";
+import { orderRouter } from "./routes/orderRoutes.js";
+import { productRouter } from "./routes/productRoutes.js";
+
 
 const app = express();
 app.use(express.json());
 
-if (process.env.NODE_ENV == "production") {
+app.use("/api", authRouter);
+app.use("/api", cartRouter);
+app.use("/api", productRouter);
+app.use("/api", orderRouter);
+
+console.log("Added routes");
+
+if (process.env.NODE_ENV == "prod") {
   app.use(express.static("client/build"));
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "build", index.html));
@@ -26,6 +38,10 @@ mongoose
   })
   .then((value) => {
     console.log("Connecting to database -- " + (value ? "Connected" : ""));
-    app.listen(PORT);
+    app.listen(PORT, () => {
+      console.log(
+        "E-commerce backend server started at -- http://localhost:" + PORT
+      );
+    });
   })
   .catch((error) => console.log("Error connecting to database -- " + error));
