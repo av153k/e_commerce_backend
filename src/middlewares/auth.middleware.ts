@@ -18,6 +18,7 @@ function auth(req: Request, res: Response, next: NextFunction) {
     if (user) user.id = decodedToken;
     next();
   } catch (error) {
+    console.log("Auth error ---", error);
     res.status(400).json({ msg: "Token is not valid !!" });
   }
 }
