@@ -1,10 +1,22 @@
 import mongoose from "mongoose";
 const schema = mongoose.Schema;
 
+interface CartInerface extends mongoose.Document {
+  userId: string;
+  products: [
+    {
+      id: string;
+      name: string;
+      quantity: number;
+      price: number;
+    }
+  ];
+  totalPrice: number;
+}
+
 const cartSchema = new schema({
   userId: {
     type: String,
-
   },
   products: [
     {
@@ -19,8 +31,8 @@ const cartSchema = new schema({
         required: true,
       },
       price: {
-        type: Number
-      }
+        type: Number,
+      },
     },
   ],
   totalPrice: {
@@ -30,5 +42,7 @@ const cartSchema = new schema({
   },
 });
 
-const Cart = mongoose.model("cart", cartSchema);
+
+
+const Cart = mongoose.model<CartInerface>("cart", cartSchema);
 export { Cart };

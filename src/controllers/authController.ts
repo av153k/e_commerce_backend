@@ -1,10 +1,11 @@
-import { User } from "../models/user.js";
+import { User } from "../models/user";
 import jsonwebtoken  from "jsonwebtoken";
-import * as creds from "../config/creds.json";
+import creds from "../private/creds.json";
 import bcrypt from "bcrypt";
+import { Request, Response } from "express";
 
 
-export function register(req, res) {
+export function register(req: Request, res: Response) {
   const { name, email, password } = req.body;
   console.log(name, email, password);
   if (!name) {
@@ -39,7 +40,7 @@ export function register(req, res) {
   });
 }
 
-export async function login(req, res) {
+export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ msg: "Please enter all fields!" });
@@ -68,7 +69,7 @@ export async function login(req, res) {
           res.json({
             token,
             user: {
-              id: fetchedUser.__id,
+              id: fetchedUser._id,
               name: fetchedUser.name,
               email: fetchedUser.email,
             },
@@ -79,8 +80,8 @@ export async function login(req, res) {
   });
 }
 
-export function getUser(req, res) {
-  User.findById(req.user.id)
+export function getUser(req: Request, res: Response) {
+  User.findById(req.params.userId)
     .select("-password")
     .then((fetchedUser) => res.json(fetchedUser));
 }

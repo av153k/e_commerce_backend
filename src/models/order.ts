@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
 const schema = mongoose.Schema;
 
+interface OrderInteface extends mongoose.Document {
+  userId: string;
+  products: [{ id: string; name: string; quantity: number; price: number }];
+  bill: number;
+  createdAt: Date;
+}
+
 const orderSchema = new schema({
   userId: {
     type: String,
@@ -34,5 +41,5 @@ const orderSchema = new schema({
   },
 });
 
-const Order = mongoose.model("order", orderSchema);
+const Order = mongoose.model<OrderInteface>("order", orderSchema);
 export { Order };

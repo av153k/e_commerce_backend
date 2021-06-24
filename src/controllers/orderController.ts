@@ -1,24 +1,25 @@
-import { Order } from "../models/order.js";
-import { Cart } from "../models/cart.js";
-import { User } from "../models/user.js";
-import * as creds from "../config/creds.json";
+import { Order } from "../models/order";
+import { Cart } from "../models/cart";
+import { User } from "../models/user";
+import creds from "../private/creds.json";
 import Stripe from "stripe";
+import { Request, Response } from "express";
 
-const stripe = new Stripe(creds.stripeApiKey);
+const stripe = new Stripe(creds.stripeApiKey, { apiVersion: "2020-08-27" });
 
-export async function getOrder(req, res) {
+export async function getOrder(req: Request, res: Response) {
   const userId = req.params.id;
   Order.find({ userId })
     .sort({ createdAt: -1 })
     .then((orders) => res.status(200).send({ orders: orders }));
 }
-export async function checkout(req, res) {
+export async function checkout(req: Request, res: Response) {
   try {
     const userId = req.params.id;
     const { source } = req.body;
-    let cart = Cart.findOne({ userId });
-    let user = User.findOne({ _id: userId });
-    const userEmail = user.email;
+    let cart = await Cart.findOne({ userId });
+    let user = await User.findOne({ _id: userId });
+    const userEmail = user!.email;
 
     if (cart) {
       const charge = stripe.charges.create({

@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
-import * as creds from "../config/creds.json";
+import creds from "../private/creds.json";
+import { Request, Response, NextFunction } from "express";
 
-function auth(req, res, next) {
+function auth(req: Request, res: Response, next: NextFunction) {
   const token = req.header("x-auth-token");
 
   if (!token) {
@@ -12,8 +13,9 @@ function auth(req, res, next) {
 
   try {
     const decodedToken = jwt.verify(token, creds.jwtSecretKey);
+    const user = req.user;
 
-    req.user = decodedToken;
+    if (user) user.id = decodedToken;
     next();
   } catch (error) {
     res.status(400).json({ msg: "Token is not valid !!" });

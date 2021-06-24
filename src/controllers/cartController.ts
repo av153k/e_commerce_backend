@@ -1,11 +1,12 @@
-import {Product} from "../models/product.js";
-import {Cart} from "../models/cart.js";
+import {Product} from "../models/product";
+import {Cart} from "../models/cart";
+import { Request, Response } from "express";
 
-export async function getCart (req, res)  {
+export async function getCart (req: Request, res: Response)  {
   const userId = req.params.userId;
   try {
-    let cart = Cart.findOne({ userId });
-    if (cart && cart.items.length > 0) {
+    let cart = await Cart.findOne({ userId });
+    if (cart && cart.products.length > 0) {
       res.status(200).send({ cart: cart });
     } else {
       res.status(404).send({ error: "Cart not found" });
@@ -16,9 +17,10 @@ export async function getCart (req, res)  {
   }
 };
 
- export async function updateCartProduct(req, res)  {
+ export async function updateCartProduct(req: Request, res: Response)  {
   const userId = req.params.userId;
-  const { productId, productQuantity } = req.body;
+   const productId: string = req.body.productId;
+   const productQuantity: number = req.body.productQuantity;
   try {
     let cart = await Cart.findOne({ userId });
     let product = await Product.findOne({ productId });
@@ -26,8 +28,8 @@ export async function getCart (req, res)  {
       res.status(404).send({ error: "Item not found" });
     }
 
-    const productPrice = product.productPrice;
-    const productName = product.productName;
+    const productPrice: number = product!.price;
+    const productName: string = product!.title;
 
     if (cart) {
       let productIndex = cart.products.findIndex((p) => p.id == productId);
@@ -38,13 +40,13 @@ export async function getCart (req, res)  {
         cart.products[productIndex] = existingProduct;
       } else {
         cart.products.push({
-          productId,
-          productName,
-          productQuantity,
-          productPrice,
+          id: productId,
+          name: productName,
+          quantity: productQuantity,
+          price: productPrice,
         });
       }
-      cart.totalproductPrice += productQuantity * productPrice;
+      cart.totalPrice += productQuantity * productPrice;
       cart = await cart.save();
       return res.status(200).send({ cart: cart });
     } else {
@@ -61,19 +63,19 @@ export async function getCart (req, res)  {
   }
 };
 
- export async function deleteCartProduct(req, res)  {
+ export async function deleteCartProduct(req: Request, res: Response)  {
   const userId = req.params.userId;
   const productId = req.params.productId;
 
   try {
     let cart = await Cart.findOne({ userId });
-    let productIndex = await Cart.products.findIndex((p) => p.id == productId);
+    let productIndex = cart!.products.findIndex((p) => p.id == productId);
     if (productIndex > -1) {
-      let existingProduct = cart.products[productIndex];
-      cart.totalPrice -= existingProduct.quantity * existingProduct.price;
-      cart.products.splice(productIndex, 1);
+      let existingProduct = cart!.products[productIndex];
+      cart!.totalPrice -= existingProduct.quantity * existingProduct.price;
+      cart!.products.splice(productIndex, 1);
     }
-    cart = await cart.save();
+    cart = await cart!.save();
     res.status(200).send({ cart: cart });
   } catch (error) {
     console.log(error);

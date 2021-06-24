@@ -1,6 +1,14 @@
 import mongoose from "mongoose";
 const schema = mongoose.Schema;
 
+interface ProductInterface extends mongoose.Document{
+  title: string,
+  description: string,
+  category: string,
+  price: number,
+  addedAt: Date,
+}
+
 const productSchema = new schema({
   title: {
     type: String,
@@ -24,5 +32,5 @@ const productSchema = new schema({
   },
 });
 
-const Product = mongoose.model("product", productSchema);
+const Product = mongoose.model<ProductInterface>("product", productSchema);
 export { Product };

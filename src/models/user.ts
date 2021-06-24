@@ -4,6 +4,14 @@ const schema = mongoose.Schema;
 import validator from "validator";
 // const { isValidEmail } = require("validator");
 
+interface UserInterface extends mongoose.Document {
+  name: string;
+  email: string;
+  password: string;
+  createAt: Date;
+  lastUpdatedAt: Date;
+}
+
 const userSchema = new schema({
   name: {
     type: String,
@@ -31,6 +39,6 @@ const userSchema = new schema({
   },
 });
 
-const User = mongoose.model("user", userSchema);
+const User = mongoose.model<UserInterface>("user", userSchema);
 
-export { User };
+export { User, UserInterface };
