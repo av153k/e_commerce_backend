@@ -7,7 +7,6 @@ import { cartRouter } from "./routes/cartRoutes";
 import { orderRouter } from "./routes/orderRoutes";
 import { productRouter } from "./routes/productRoutes";
 
-
 const app = express();
 app.use(express.json());
 
@@ -26,7 +25,8 @@ if (process.env.NODE_ENV == "prod") {
 }
 
 const mongoDbUrl: string = config.get("mongoDbUrl");
-const PORT = process.env.PORT || 4000;
+const HOST: string = "0.0.0.0";
+const PORT: number = 8080;
 
 console.log("Database Url --- " + mongoDbUrl);
 // connecting to database
@@ -38,10 +38,10 @@ mongoose
   })
   .then((value) => {
     console.log("Connecting to database -- " + (value ? "Connected" : ""));
-    app.listen(PORT, () => {
+    app.listen(PORT, HOST, () => {
       console.log(
-        "E-commerce backend server started at -- http://localhost:" + PORT
+        "E-commerce backend server started at -- http://" + HOST + ":" + PORT
       );
     });
   })
-  .catch((error) => console.log("Error connecting to database -- " + error));
+  .catch((error) => console.log("Error connecting to database -" + error));

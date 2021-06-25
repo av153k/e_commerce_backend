@@ -1,3 +1,3 @@
 export default {
-  mongoDbUrl: "mongodb://localhost:27017/eCommerceDb",
+  mongoDbUrl: "mongodb://mongo_db:27017/eCommerceDb",
 };

@@ -9,7 +9,7 @@
     "server": "nodemon --experimental-json-modules server.js",
     "client": "npm start --prefix-client",
     "node-dev": "concurrently \"npm run server\" \"npm run client\"",
-    "dev": "tsnd --respawn --transpile-only ./src/server.ts",
+    "dev": "tsnd --poll --respawn --transpile-only ./src/server.ts",
     "build": "tsc"
   },
   "dependencies": {
